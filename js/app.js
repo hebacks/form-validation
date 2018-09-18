@@ -170,7 +170,7 @@ class FormValidation {
       finalMessage.innerHTML = 'Form successfully submitted!';
       finalMessage.classList.add('successful');
     } else {
-      finalMessage.innerHTML = 'Almost there! Please update inavlid fields!';
+      finalMessage.innerHTML = 'Almost there! Please update invalid fields!';
       finalMessage.classList.remove('successful');
     }
 
@@ -206,7 +206,7 @@ class FormValidation {
     let serialized = {};
     Object.keys(this.VirtualForm).forEach(key => {
       serialized[key] = this.VirtualForm[key].value;
-    })
+    });
     return serialized;
   }
 }
@@ -219,7 +219,7 @@ formValidation.setCustomValidators({
     formValidation.validators.isRequired(),
     formValidation.validators.isLongerThan(3)
   ]
-})
+});
 
 form.addEventListener('submit', () => {
   const status = formValidation.validateAll(event);

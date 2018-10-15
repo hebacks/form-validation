@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "lib": ["es6", "dom"],
+    "module": "es6",
+    "target": "es5",
+    "downlevelIteration": true,
+    "allowJs": true
+  }
+}

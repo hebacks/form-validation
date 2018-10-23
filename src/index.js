@@ -1,5 +1,6 @@
 import FormValidation from "./FormValidation";
 import { hasCapitalLetter, hasNumber } from "./newValidators";
+import { isUnique } from "./async";
 import "../css/style.scss";
 
 const config = {
@@ -21,7 +22,8 @@ formValidation.customizeValidators({
     hasCapitalLetter("This value has to contain at least one capital letter. "),
     hasNumber("This value has to contain at least one number. "),
     formValidation.validators.isLongerThan(3, "Min. 3 characters required. ")
-  ]
+  ],
+  username: [isUnique("This username is already taken. ")]
 });
 
 form.addEventListener("submit", () => {

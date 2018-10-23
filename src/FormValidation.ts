@@ -260,7 +260,12 @@ export default class FormValidation {
     this.form.addEventListener(
       "input",
       (event: Event) => {
-        if (self.VirtualForm[(<HTMLInputElement>event.target).name].isDirty) {
+        const FormElement =
+          self.VirtualForm[(<HTMLInputElement>event.target).name];
+        FormElement.value = FormValidation.getValue(<ValidatableHTMLElement>(
+          event.target
+        ));
+        if (FormElement.isDirty) {
           this.checkValidity(<ValidatableHTMLElement>event.target);
         }
       },

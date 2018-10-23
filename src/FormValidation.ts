@@ -1,66 +1,13 @@
-interface ValidatorsList {
-  [key: string]: Function;
-}
-
-export interface ValidationResult {
-  isValid: boolean;
-  errorMessage: string;
-}
-
-interface NewValidatorsMap {
-  [key: string]: Array<string>;
-}
-
-type ValidatableHTMLElement =
-  | HTMLInputElement
-  | HTMLSelectElement
-  | HTMLTextAreaElement;
-
-type FormChildHTMLElement = ValidatableHTMLElement | HTMLButtonElement;
-
-interface FormElement {
-  element: ValidatableHTMLElement;
-  isValid: boolean;
-  isDirty: boolean;
-  errorMessages?: Array<string>;
-  validationRules?: Array<string>;
-  customValidators?: Array<Function>;
-  validRules: number;
-  value: any;
-}
-
-interface VirtualForm {
-  [key: string]: FormElement;
-}
-
-interface SerializedForm {
-  [key: string]: string | boolean;
-}
-
-interface Configuration {
-  errorClassName?: string;
-  successMessage?: string;
-  errorMessage?: string;
-  newValidators?: ValidatorsList;
-  newValidatorsMap?: NewValidatorsMap;
-}
-
-interface CustomValidators {
-  [key: string]: Array<Function>;
-}
-
 export default class FormValidation {
-  private validators: ValidatorsList;
-  private VirtualForm: VirtualForm;
+  private validators: FormValidation.Validators;
+  private VirtualForm: FormValidation.VirtualForm;
   private form: HTMLElement;
   public errorMessage: string;
   private errorClassName: string;
   public successMessage: string;
-  private newValidators: ValidatorsList;
-  private newValidatorsMap: NewValidatorsMap;
   private initValidation: Function;
 
-  constructor(form: HTMLElement, config: Configuration = {}) {
+  constructor(form: HTMLElement, config: FormValidation.Configuration = {}) {
     this.form = form;
     this.VirtualForm = {};
     this.errorClassName = config.errorClassName || "invalid";
@@ -69,12 +16,10 @@ export default class FormValidation {
     this.errorMessage =
       config.errorMessage ||
       "Please update invalid fields and hit submit again";
-    this.newValidators = config.newValidators || {};
-    this.newValidatorsMap = config.newValidatorsMap || {};
     this.validators = {
       isRequired: (customErrorMessage: string) => (
         value: any
-      ): ValidationResult => {
+      ): FormValidation.Result => {
         let isValid;
         switch (typeof value) {
           case "boolean":
@@ -90,7 +35,7 @@ export default class FormValidation {
       },
       isEmail: (customErrorMessage: string) => (
         value: any
-      ): ValidationResult => {
+      ): FormValidation.Result => {
         const emailRegex = new RegExp(
           "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]{2,}$"
         );
@@ -101,7 +46,7 @@ export default class FormValidation {
       },
       isLongerThan: (minLength: number, error: string = null) => (
         value: any
-      ): ValidationResult => {
+      ): FormValidation.Result => {
         return {
           isValid: value.length >= minLength,
           errorMessage:
@@ -112,7 +57,6 @@ export default class FormValidation {
     };
     this.initValidation = function(): void {
       this.createVirtualForm().validate();
-      this.addNewValidators();
     };
     this.initValidation();
   }
@@ -120,13 +64,13 @@ export default class FormValidation {
   createVirtualForm() {
     this.form
       .querySelectorAll("[name]")
-      .forEach((element: ValidatableHTMLElement) =>
+      .forEach((element: FormValidation.Element) =>
         this.saveFormElement(element)
       );
     return this;
   }
 
-  saveFormElement(element: ValidatableHTMLElement) {
+  saveFormElement(element: FormValidation.Element) {
     this.VirtualForm[element.name] = {
       element: element,
       isValid: false,
@@ -139,14 +83,7 @@ export default class FormValidation {
     };
   }
 
-  addNewValidators() {
-    this.validators = {
-      ...this.validators,
-      ...this.newValidators
-    };
-  }
-
-  getValidationRules(element: ValidatableHTMLElement): Array<string> {
+  getValidationRules(element: FormValidation.Element): Array<string> {
     let validationRules: Array<string> = [];
     if (
       element.hasAttribute("required") &&
@@ -156,14 +93,10 @@ export default class FormValidation {
     }
     if (element.dataset.validators)
       validationRules = JSON.parse(element.dataset.validators);
-
-    if (this.newValidatorsMap.hasOwnProperty(element.name)) {
-      validationRules.push(...this.newValidatorsMap[element.name]);
-    }
     return validationRules;
   }
 
-  static getValue(element: ValidatableHTMLElement): any {
+  static getValue(element: FormValidation.Element): any {
     switch (element.getAttribute("type")) {
       case "checkbox":
         return (<HTMLInputElement>element).checked;
@@ -174,8 +107,8 @@ export default class FormValidation {
 
   validateRule(
     rule: string,
-    HTMLElement: ValidatableHTMLElement,
-    FormElement: FormElement
+    HTMLElement: FormValidation.Element,
+    FormElement: FormValidation.Field
   ) {
     FormElement.value = FormValidation.getValue(HTMLElement);
     const result = this.validators[rule]()(FormElement.value);
@@ -189,12 +122,13 @@ export default class FormValidation {
     );
   }
 
-  checkCustomValidators(HTMLElement: ValidatableHTMLElement) {
+  checkCustomValidators(HTMLElement: FormValidation.Element) {
     const FormElement = this.VirtualForm[HTMLElement.name];
-    FormElement.customValidators.forEach(validator => {
+    FormElement.customValidators.forEach(async validator => {
       if (validator) {
         FormElement.value = FormValidation.getValue(HTMLElement);
-        const result = validator(FormElement.value);
+        console.log(validator(FormElement.value));
+        const result = await validator(FormElement.value);
 
         result.isValid
           ? this.setValid(HTMLElement, FormElement, result)
@@ -207,7 +141,7 @@ export default class FormValidation {
     });
   }
 
-  checkValidity(HTMLElement: ValidatableHTMLElement) {
+  checkValidity(HTMLElement: FormValidation.Element) {
     const FormElement = this.VirtualForm[HTMLElement.name];
 
     FormElement.isDirty = true;
@@ -218,9 +152,9 @@ export default class FormValidation {
   }
 
   setValid(
-    HTMLElement: ValidatableHTMLElement,
-    FormElement: FormElement,
-    result: ValidationResult
+    HTMLElement: FormValidation.Element,
+    FormElement: FormValidation.Field,
+    result: FormValidation.Result
   ) {
     HTMLElement.classList.remove(this.errorClassName);
     FormElement.errorMessages = FormElement.errorMessages.filter(
@@ -230,9 +164,9 @@ export default class FormValidation {
   }
 
   setInvalid(
-    HTMLElement: ValidatableHTMLElement,
-    FormElement: FormElement,
-    result: ValidationResult
+    HTMLElement: FormValidation.Element,
+    FormElement: FormValidation.Field,
+    result: FormValidation.Result
   ) {
     HTMLElement.classList.add(this.errorClassName);
     if (FormElement.errorMessages.indexOf(result.errorMessage) < 0) {
@@ -250,9 +184,12 @@ export default class FormValidation {
     this.form.addEventListener(
       "blur",
       (event: Event) => {
-        if (types.indexOf((<FormChildHTMLElement>event.target).type) > -1)
+        if (
+          types.indexOf((<FormValidation.FormChildElement>event.target).type) >
+          -1
+        )
           return;
-        this.checkValidity(<ValidatableHTMLElement>event.target);
+        this.checkValidity(<FormValidation.Element>event.target);
       },
       true
     );
@@ -262,11 +199,11 @@ export default class FormValidation {
       (event: Event) => {
         const FormElement =
           self.VirtualForm[(<HTMLInputElement>event.target).name];
-        FormElement.value = FormValidation.getValue(<ValidatableHTMLElement>(
+        FormElement.value = FormValidation.getValue(<FormValidation.Element>(
           event.target
         ));
         if (FormElement.isDirty) {
-          this.checkValidity(<ValidatableHTMLElement>event.target);
+          this.checkValidity(<FormValidation.Element>event.target);
         }
       },
       true
@@ -277,7 +214,7 @@ export default class FormValidation {
       "change",
       event => {
         (<HTMLInputElement>event.target).type === "checkbox" &&
-          this.checkValidity(<ValidatableHTMLElement>event.target);
+          this.checkValidity(<FormValidation.Element>event.target);
       },
       true
     );
@@ -309,7 +246,7 @@ export default class FormValidation {
     return validForm;
   }
 
-  customizeValidators(customConfig: CustomValidators = null) {
+  customizeValidators(customConfig: FormValidation.CustomValidators = null) {
     const FormElements = Object.keys(customConfig);
     FormElements.forEach(element => {
       this.VirtualForm[element].customValidators = customConfig[element];
@@ -317,7 +254,7 @@ export default class FormValidation {
     return this;
   }
 
-  removeValidators(customRemoval: CustomValidators = null) {
+  removeValidators(customRemoval: FormValidation.CustomValidators = null) {
     const elementsNames = Object.keys(customRemoval);
 
     elementsNames.forEach(elementName => {
@@ -335,7 +272,7 @@ export default class FormValidation {
   }
 
   serialize() {
-    let serialized: SerializedForm = {};
+    let serialized: FormValidation.Serialized = {};
     Object.keys(this.VirtualForm).forEach(key => {
       serialized[key] = this.VirtualForm[key].value;
     });

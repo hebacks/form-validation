@@ -1,11 +1,6 @@
-interface ValidationResut {
-  isValid: boolean;
-  errorMessage: string;
-}
-
 export const hasCapitalLetter = (errorMessage: string) => (
   value: any
-): ValidationResut => {
+): FormValidation.Result => {
   const capitalLetterRegex = /[A-Z]/;
   return {
     isValid: capitalLetterRegex.test(value),
@@ -15,7 +10,7 @@ export const hasCapitalLetter = (errorMessage: string) => (
 
 export const hasNumber = (errorMessage: string) => (
   value: any
-): ValidationResut => {
+): FormValidation.Result => {
   let hasNumber = [...value].find(letter => letter.trim() && !isNaN(letter));
   return {
     isValid: hasNumber !== undefined,

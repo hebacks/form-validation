@@ -27,8 +27,15 @@ formValidation.customizeValidators({
 form.addEventListener("submit", () => {
   const status = formValidation.validateAll(event);
   const serializedForm = formValidation.serialize();
+  const finalMessage = document.querySelector(".form__message");
+
   if (status) {
+    finalMessage.innerHTML = formValidation.successMessage;
+    finalMessage.classList.add("successful");
     // action on submit goes here
+  } else {
+    finalMessage.innerHTML = formValidation.errorMessage;
+    finalMessage.classList.remove("successful");
   }
   console.log(serializedForm);
 });

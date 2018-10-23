@@ -285,8 +285,16 @@ export default class FormValidation {
 
   validateAll(event: Event) {
     event.preventDefault();
-    const finalMessage = document.querySelector(".form__message");
-    const requiredFields = Object.keys(this.VirtualForm).length - 1;
+
+    let requiredFields = [];
+    for (let key of Object.keys(this.VirtualForm)) {
+      if (
+        this.VirtualForm[key].validationRules.length > 0 ||
+        this.VirtualForm[key].customValidators.length > 0
+      ) {
+        requiredFields.push(this.VirtualForm[key]);
+      }
+    }
     let validFields = 0;
     let validForm = false;
     for (let key of Object.keys(this.VirtualForm)) {
@@ -294,13 +302,8 @@ export default class FormValidation {
       this.VirtualForm[key].isValid && validFields++;
     }
 
-    if (validFields === requiredFields) {
+    if (validFields === requiredFields.length) {
       validForm = true;
-      finalMessage.innerHTML = this.successMessage;
-      finalMessage.classList.add("successful");
-    } else {
-      finalMessage.innerHTML = this.errorMessages.final;
-      finalMessage.classList.remove("successful");
     }
 
     return validForm;

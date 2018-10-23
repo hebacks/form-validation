@@ -37,14 +37,10 @@ interface SerializedForm {
   [key: string]: string | boolean;
 }
 
-interface ConfigErrorMessages {
-  [key: string]: string;
-}
-
 interface Configuration {
-  errorMessages?: ConfigErrorMessages;
   errorClassName?: string;
   successMessage?: string;
+  errorMessage?: string;
   newValidators?: ValidatorsList;
   newValidatorsMap?: NewValidatorsMap;
 }
@@ -57,23 +53,28 @@ export default class FormValidation {
   private validators: ValidatorsList;
   private VirtualForm: VirtualForm;
   private form: HTMLElement;
-  private errorMessages: ConfigErrorMessages;
+  public errorMessage: string;
   private errorClassName: string;
-  private successMessage: string;
+  public successMessage: string;
   private newValidators: ValidatorsList;
   private newValidatorsMap: NewValidatorsMap;
   private initValidation: Function;
 
-  constructor(form: HTMLElement, config: Configuration) {
+  constructor(form: HTMLElement, config: Configuration = {}) {
     this.form = form;
     this.VirtualForm = {};
-    this.errorMessages = config.errorMessages || {};
     this.errorClassName = config.errorClassName || "invalid";
-    this.successMessage = config.successMessage || "Success!";
+    this.successMessage =
+      config.successMessage || "Form successfully submitted!";
+    this.errorMessage =
+      config.errorMessage ||
+      "Please update invalid fields and hit submit again";
     this.newValidators = config.newValidators || {};
     this.newValidatorsMap = config.newValidatorsMap || {};
     this.validators = {
-      isRequired: () => (value: any): ValidationResult => {
+      isRequired: (customErrorMessage: string) => (
+        value: any
+      ): ValidationResult => {
         let isValid;
         switch (typeof value) {
           case "boolean":
@@ -84,24 +85,28 @@ export default class FormValidation {
         }
         return {
           isValid: isValid,
-          errorMessage:
-            this.errorMessages.isRequired || "This is required field. "
+          errorMessage: customErrorMessage || "This field is required. "
         };
       },
-      isEmail: () => (value: any): ValidationResult => {
+      isEmail: (customErrorMessage: string) => (
+        value: any
+      ): ValidationResult => {
         const emailRegex = new RegExp(
           "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]{2,}$"
         );
         return {
           isValid: emailRegex.test(value),
-          errorMessage:
-            this.errorMessages.isEmail || "Please provide a valid email. "
+          errorMessage: customErrorMessage || "Please enter a valid email. "
         };
       },
-      isLongerThan: (minLength: number) => (value: any): ValidationResult => {
+      isLongerThan: (minLength: number, error: string = null) => (
+        value: any
+      ): ValidationResult => {
         return {
           isValid: value.length >= minLength,
-          errorMessage: `This value has to be at least ${minLength} characters long. `
+          errorMessage:
+            error ||
+            `This value has to be at least ${minLength} characters long. `
         };
       }
     };
@@ -236,7 +241,6 @@ export default class FormValidation {
     FormElement.isValid = false;
   }
 
-  // TBC!!!!!
   validate() {
     this.form.setAttribute("novalidate", true.toString());
     const self = this;
@@ -297,7 +301,7 @@ export default class FormValidation {
     return validForm;
   }
 
-  setCustomValidators(customConfig: CustomValidators = null) {
+  customizeValidators(customConfig: CustomValidators = null) {
     const FormElements = Object.keys(customConfig);
     FormElements.forEach(element => {
       this.VirtualForm[element].customValidators = customConfig[element];

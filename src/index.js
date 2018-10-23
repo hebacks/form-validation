@@ -1,33 +1,27 @@
-import "../css/style.scss";
-
 import FormValidation from "./FormValidation";
 import { hasCapitalLetter, hasNumber } from "./newValidators";
+import "../css/style.scss";
 
 const config = {
-  errorMessages: {
-    isRequired: "This field is required. ",
-    isEmail: "Please enter a valid email. ",
-    final: "Please update invalid fields and hit submit again"
-  },
   errorClassName: "invalid",
   successMessage: "Form successfully submitted!",
-
-  newValidators: { hasCapitalLetter: hasCapitalLetter, hasNumber: hasNumber },
-  newValidatorsMap: {
-    message: ["hasCapitalLetter", "hasNumber"]
-  }
+  errorMessage: "Please update invalid fields and hit submit again"
 };
 
 const form = document.querySelector("#login");
+
 const formValidation = new FormValidation(form, config);
 
-formValidation.setCustomValidators({
+formValidation.customizeValidators({
   name: [
     formValidation.validators.isRequired(),
-    formValidation.validators.isLongerThan(2),
-    hasCapitalLetter()
+    formValidation.validators.isLongerThan(2)
   ],
-  message: [formValidation.validators.isLongerThan(3)]
+  message: [
+    hasCapitalLetter("This value has to contain at least one capital letter. "),
+    hasNumber("This value has to contain at least one number. "),
+    formValidation.validators.isLongerThan(3, "Min. 3 characters required. ")
+  ]
 });
 
 form.addEventListener("submit", () => {

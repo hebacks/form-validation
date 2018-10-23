@@ -3,18 +3,22 @@ interface ValidationResut {
   errorMessage: string;
 }
 
-export const hasCapitalLetter = () => (value: any): ValidationResut => {
+export const hasCapitalLetter = (errorMessage: string) => (
+  value: any
+): ValidationResut => {
   const capitalLetterRegex = /[A-Z]/;
   return {
     isValid: capitalLetterRegex.test(value),
-    errorMessage: "This value has to contain at least one capital letter. "
+    errorMessage: errorMessage
   };
 };
 
-export const hasNumber = () => (value: any): ValidationResut => {
+export const hasNumber = (errorMessage: string) => (
+  value: any
+): ValidationResut => {
   let hasNumber = [...value].find(letter => letter.trim() && !isNaN(letter));
   return {
     isValid: hasNumber !== undefined,
-    errorMessage: "This value has to contain at least one number. "
+    errorMessage: errorMessage
   };
 };

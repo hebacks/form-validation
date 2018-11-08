@@ -1,4 +1,4 @@
-declare namespace FormValidation {
+export namespace FV {
   export interface Validators {
     [key: string]: Function;
   }

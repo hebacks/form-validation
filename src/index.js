@@ -4,9 +4,7 @@ import { isUnique } from "./async";
 import "../css/style.scss";
 
 const config = {
-  errorClassName: "invalid",
-  successMessage: "Form successfully submitted!",
-  errorMessage: "Please update invalid fields and hit submit again"
+  errorClassName: "invalid"
 };
 
 const form = document.querySelector("#login");
@@ -32,11 +30,12 @@ form.addEventListener("submit", () => {
   const finalMessage = document.querySelector(".form__message");
 
   if (status) {
-    finalMessage.innerHTML = formValidation.successMessage;
+    finalMessage.innerHTML = "Form successfully submitted!";
     finalMessage.classList.add("successful");
     // action on submit goes here
   } else {
-    finalMessage.innerHTML = formValidation.errorMessage;
+    finalMessage.innerHTML =
+      "Please update invalid fields and hit submit again";
     finalMessage.classList.remove("successful");
   }
   console.log(serializedForm);

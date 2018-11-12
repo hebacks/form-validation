@@ -1,9 +1,6 @@
 import { FV } from "./FormValidation.d";
 
 export default class FormValidation {
-  public errorMessage: string;
-  public successMessage: string;
-
   private validators: FV.Validators;
   private VirtualForm: FV.VirtualForm;
   private form: HTMLElement;
@@ -14,11 +11,6 @@ export default class FormValidation {
     this.form = form;
     this.VirtualForm = {};
     this.errorClassName = config.errorClassName || "invalid";
-    this.successMessage =
-      config.successMessage || "Form successfully submitted!";
-    this.errorMessage =
-      config.errorMessage ||
-      "Please update invalid fields and hit submit again";
     this.validators = {
       isRequired: (errorMessage: string = "This field is required. ") => (
         value: any

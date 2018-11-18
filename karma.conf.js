@@ -53,7 +53,14 @@ module.exports = function(config) {
     autoWatch: true,
 
     // start these browsers
-    browsers: ["Chrome"],
+    browsers: ["ChromeHeadless"],
+
+    customLaunchers: {
+      ChromeTravisCi: {
+        base: "ChromeHeadless",
+        flags: ["--no-sandbox"]
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

@@ -115,8 +115,34 @@ select.invalid {
   font-weight: 700;
 }
 
+.loader {
+  &:before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    top: 0;
+    right: 0;
+    border: {
+      width: 4px;
+      style: solid;
+      color: #e0e0e0;
+      radius: 50%;
+      bottom: 4px solid dodgerblue;
+    }
+    opacity: 0.7;
+    animation: spin 0.9s 0.1s ease-in-out infinite;
+  }
+}
+
 @media (min-width: 500px) {
   .wrapper {
     max-width: 500px;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }

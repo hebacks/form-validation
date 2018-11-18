@@ -95,8 +95,27 @@ select.invalid {
   color: #3ab914;
   font-weight: 700; }
 
+.loader:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  top: 0;
+  right: 0;
+  border-width: 4px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  border-radius: 50%;
+  border-bottom: 4px solid dodgerblue;
+  opacity: 0.7;
+  animation: spin 0.9s 0.1s ease-in-out infinite; }
+
 @media (min-width: 500px) {
   .wrapper {
     max-width: 500px; } }
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg); } }
 
 /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJtYWluLmNzcyIsInNvdXJjZVJvb3QiOiIifQ==*/

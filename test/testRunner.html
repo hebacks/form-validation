@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="dist/main.css" rel="stylesheet" />
+    <title>FV Test Runner</title>
+  </head>
+
+  <body>
+    <main class="wrapper">
+      <h1 class="page__title">Sample Form Validation</h1>
+      <form id="login" class="login__form">
+        <div class="form__row">
+          <label for="username" class="login__label">
+            Username <input type="text" class="login__input" name="username" />
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <label for="name" class="login__label">
+            Name <input type="text" class="login__input" name="name" />
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <label for="email" class="login__label"
+            >Email
+            <input
+              type="email"
+              class="login__input"
+              data-validators="[&quot;isRequired&quot;, &quot;isEmail&quot;]"
+              required
+              name="email"
+            />
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <label for="backupEmail" class="login__label"
+            >[Optionally] Back-up email
+            <input type="email" class="login__input" name="backupEmail" />
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <label for="select" class="login__label">
+            Please choose one of below
+            <select
+              name="select"
+              id="select"
+              data-validators="[&quot;isRequired&quot;]"
+            >
+              <option value="" disabled selected>Choose wisely!</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+              <option value="4">Four</option>
+            </select>
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <label for="message" class="login__label"
+            >Leave your message here
+            <textarea name="message" class="login__message"></textarea>
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <label class="login__label login__label--terms">
+            <input
+              type="checkbox"
+              name="terms"
+              class="login__terms"
+              required
+              data-validators="[&quot;isRequired&quot;]"
+            />
+            I happily agree with terms of services
+          </label>
+          <div class="error-message"></div>
+        </div>
+
+        <div class="form__row">
+          <input type="submit" value="Submit" class="login__btn" />
+        </div>
+      </form>
+      <div class="form__message"></div>
+    </main>
+    <script src="dist/main.js"></script>
+    <script src="./isRequired.spec.js"></script>
+  </body>
+</html>

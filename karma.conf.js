@@ -8,7 +8,7 @@ module.exports = function(config) {
     frameworks: ["jasmine"],
 
     plugins: ["karma-jasmine", "karma-webpack", "karma-chrome-launcher"],
-
+    customContextFile: "test/testRunner.html",
     files: [
       { pattern: "test/*.spec.js", watched: false },
       { pattern: "test/**/*.spec.js", watched: false }
@@ -53,7 +53,7 @@ module.exports = function(config) {
     autoWatch: false,
 
     // start these browsers
-    browsers: ["ChromeHeadless"],
+    browsers: ["ChromeHeadless", "Chrome"],
 
     customLaunchers: {
       ChromeTravisCi: {

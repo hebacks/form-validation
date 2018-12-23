@@ -1,4 +1,4 @@
-import { FV } from "../src/FormValidation.d";
+import { FV } from "../FormValidation.d";
 
 export const hasNumber = (
   errorMessage: string = "It has to contain a number"

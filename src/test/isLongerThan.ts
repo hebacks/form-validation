@@ -1,4 +1,4 @@
-import { FV } from "../src/FormValidation.d";
+import { FV } from "../FormValidation.d";
 
 export const isLongerThan = (minLength: number, error: string = null) => (
   value: any

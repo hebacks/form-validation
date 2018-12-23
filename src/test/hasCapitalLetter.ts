@@ -1,4 +1,4 @@
-import { FV } from "../src/FormValidation.d";
+import { FV } from "../FormValidation.d";
 
 export const hasCapitalLetter = (
   errorMessage: string = "It has to contain a capital letter."

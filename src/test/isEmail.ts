@@ -1,4 +1,4 @@
-import { FV } from "../src/FormValidation.d";
+import { FV } from "../FormValidation.d";
 
 export const isEmail = (
   errorMessage: string = "Please enter a valid email. "

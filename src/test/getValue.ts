@@ -1,4 +1,4 @@
-import { FV } from "../src/FormValidation.d";
+import { FV } from "../FormValidation.d";
 
 export const getValue = (element: FV.Element) => {
   switch (element.getAttribute("type")) {
